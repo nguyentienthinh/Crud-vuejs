@@ -99,6 +99,31 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'post_get_list' => [
+            'driver' => 'daily',
+            'channels' => ['daily'],
+            'path' => storage_path('logs/post/post_get_list.log'),
+            'days' => env('SYNC_POST_LOG_FILES_KEEPING'),
+        ],
+        'post_create' => [
+            'driver' => 'daily',
+            'channels' => ['daily'],
+            'path' => storage_path('logs/post/post_create.log'),
+            'days' => env('SYNC_POST_LOG_FILES_KEEPING'),
+        ],
+        'post_update' => [
+            'driver' => 'daily',
+            'channels' => ['daily'],
+            'path' => storage_path('logs/post/post_update.log'),
+            'days' => env('SYNC_POST_LOG_FILES_KEEPING'),
+        ],
+        'post_delete' => [
+            'driver' => 'daily',
+            'channels' => ['daily'],
+            'path' => storage_path('logs/post/post_delete.log'),
+            'days' => env('SYNC_POST_LOG_FILES_KEEPING'),
+        ],
     ],
 
 ];
