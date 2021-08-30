@@ -14,12 +14,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')->get(
+    '/user',
+    function (Request $request) {
+        return $request->user();
+    }
+);
 
+// User
+Route::post('/user/login', 'UserController@login');
+Route::post('/user/register', 'UserController@register');
+
+// Post
 Route::get('/posts', 'PostController@index');
-Route::post('/posts/create', 'PostController@store');
-Route::get('/posts/edit/{post:slug}', 'PostController@edit');
-Route::put('/posts/update/{post:slug}', 'PostController@update');
-Route::delete('/posts/{post:slug}', 'PostController@delete');
+// Route::delete('/posts/{slug}', 'PostController@delete');
+
+Route::middleware('auth:api')->group(
+    function () {
+        // User
+        Route::get('/user/info', 'UserController@getInfo');
+        Route::post('/user/logout', 'UserController@logout');
+
+        // Post
+        Route::post('/posts/create', 'PostController@store');
+        Route::get('/posts/edit/{slug}', 'PostController@edit');
+        Route::put('/posts/update/{slug}', 'PostController@update');
+        Route::delete('/posts/{slug}', 'PostController@delete');
+    }
+);

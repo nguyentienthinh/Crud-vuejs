@@ -14,9 +14,9 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Item Name</th>
-            <th>Item Price</th>
-            <th>Actions</th>
+            <th>Title</th>
+            <th>Body</th>
+            <th v-show="isLogin">Actions</th>
             <th></th>
         </tr>
         </thead>
@@ -25,8 +25,8 @@
                 <td>{{ post.id }}</td>
                 <td>{{ post.title }}</td>
                 <td>{{ post.body }}</td>
-                <td><router-link :to="{name: 'edit', params: { slug: post.slug }}" class="btn btn-primary">Edit</router-link></td>
-                <td>
+                <td v-show="isLogin"><router-link :to="{name: 'edit', params: { slug: post.slug }}" class="btn btn-primary">Edit</router-link></td>
+                <td v-show="isLogin">
                     <button class="btn btn-danger" @click.prevent="deletePost(post.slug)">Delete</button>
 
                 </td>
@@ -37,34 +37,29 @@
 </template>
 
 <script>
-    // import '../services/PostService.js';
     import {PostService} from '../services';
-    // const postService = new PostService();
 
     export default {
-        // components: {
-        //     postService: PostService,
-        // },
-
         data() {
             return {
                 posts: [],
+                isLogin: false
             }
         },
 
         created() {
-            // let uri = 'http://127.0.0.1:8000/api/posts';
-            // this.axios.get(uri).then(response => {
-            //     this.posts = response.data.data;
-            // });
             PostService.index().then(response => {
                 this.posts = response.data;
             });
+
+            // Check login
+            if (sessionStorage.getItem('access_token')) {
+                this.isLogin = true;
+            }
         },
 
         methods: {
             deletePost(slug) {
-                console.log(slug);
                 var result = confirm("Want to delete?");
                 if (result) {
                     PostService.destroy(slug).then(response => {
@@ -76,7 +71,7 @@
                         var successStatus = 200;
                         if (response.status == successStatus) {
                             // Notify
-                            var notify = $.notify('Create post success!', {
+                            var notify = $.notify('Delete post success!', {
                                 type: 'success',
                                 allow_dismiss: true,
                             });
@@ -89,10 +84,6 @@
                         }
                     })
                 }
-                // let uri = `http://127.0.0.1:8000/api/post/delete/${id}`;
-                // this.axios.delete(uri).then(response => {
-                //     this.posts.splice(this.posts.indexOf(id), 1);
-                // });
             },
 
             findWithAttr(array, attr, value) {

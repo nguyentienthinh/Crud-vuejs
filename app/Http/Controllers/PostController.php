@@ -4,16 +4,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\BadRequestException;
 use App\Exceptions\NoContentException;
 use App\Exceptions\NotFoundException;
-use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostCollection;
 use App\Post;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Request;
 
 /**
  * PostController class
@@ -68,10 +67,10 @@ class PostController extends Controller
     /**
      * Store function
      *
-     * @param Request $request
+     * @param PostRequest $request
      * @return string
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         $logging = Log::channel('post_create');
         $logging->info('[START] Post Create--------------------');
@@ -81,17 +80,6 @@ class PostController extends Controller
 
         try {
             $logging->info('Data request: ' . json_encode($request->all()));
-
-            // Check validate
-            $validator = Validator::make($request->all(), $this->postRules());
-            if ($validator->fails()) {
-                $validateErrors = $validator->errors()->all();
-                foreach ($validateErrors as $count => $errorMessage) {
-                    $logging->error('Error message ' . ($count + 1) . ' : ' . $errorMessage);
-                }
-
-                throw new BadRequestException();
-            }
 
             // Create post
             DB::beginTransaction();
@@ -108,17 +96,12 @@ class PostController extends Controller
             DB::commit();
 
             $logging->info('Post: Create success!');
-        } catch (BadRequestException $e) {
-            $logging->error('Post Error: ' . $e->getMessage());
-
-            $this->status = $e->getStatus();
-            $this->message = $e->getMessage();
         } catch (Exception $e) {
             DB::rollBack();
 
             $logging->error('Post Error: ' . $e->getMessage());
 
-            $this->status = config('constants.status.ERROR.OTHER');
+            $this->status = config('constants.status.status.OTHER');
             $this->message = config('constants.status.message.OTHER');
         }
 
@@ -129,15 +112,16 @@ class PostController extends Controller
     /**
      * Edit function function
      *
-     * @param Post $post
+     * @param string $slug
      * @return string
      */
-    public function edit(Post $post)
+    public function edit($slug)
     {
         // Init status and message
         $this->setUpStatusAndMessageSuccess();
 
         try {
+            $post = Post::where('slug', $slug)->first();
             // Check post exist
             if (empty($post)) {
                 throw new NotFoundException();
@@ -156,11 +140,11 @@ class PostController extends Controller
     /**
      * Update function
      *
-     * @param Post $post
-     * @param Request $request
+     * @param PostRequest $request
+     * @param string $slug
      * @return string
      */
-    public function update(Post $post, Request $request)
+    public function update(PostRequest $request, $slug)
     {
         $logging = Log::channel('post_update');
         $logging->info('[START] Post Update--------------------');
@@ -171,18 +155,8 @@ class PostController extends Controller
         try {
             $logging->info('Data request: ' . json_encode($request->all()));
 
-            // Check validate
-            $validator = Validator::make($request->all(), $this->postRules());
-            if ($validator->fails()) {
-                $validateErrors = $validator->errors()->all();
-                foreach ($validateErrors as $count => $errorMessage) {
-                    $logging->error('Error message ' . ($count + 1) . ' : ' . $errorMessage);
-                }
-
-                throw new BadRequestException();
-            }
-
             // Check post exist
+            $post = Post::where('slug', $slug)->first();
             if (empty($post)) {
                 throw new NoContentException();
             }
@@ -192,11 +166,6 @@ class PostController extends Controller
             $post->update($request->all());
             DB::commit();
         } catch (NoContentException $e) {
-            $logging->error('Post Error: ' . $e->getMessage());
-
-            $this->status = $e->getStatus();
-            $this->message = $e->getMessage();
-        } catch (BadRequestException $e) {
             $logging->error('Post Error: ' . $e->getMessage());
 
             $this->status = $e->getStatus();
@@ -218,10 +187,9 @@ class PostController extends Controller
     /**
      * Delete function
      *
-     * @param Post $post
      * @return string
      */
-    public function delete(Post $post)
+    public function delete($slug)
     {
         $logging = Log::channel('post_delete');
         $logging->info('[START] Post Delete--------------------');
@@ -231,6 +199,7 @@ class PostController extends Controller
 
         try {
             // Check post exist
+            $post = Post::where('slug', $slug)->first();
             if (empty($post)) {
                 throw new NoContentException();
             }
@@ -286,18 +255,5 @@ class PostController extends Controller
     {
         $this->status = config('constants.status.OK');
         $this->message = config('constants.message.OK');
-    }
-
-    /**
-     * Post rules
-     *
-     * @return void
-     */
-    private function postRules()
-    {
-        return [
-            'title' => 'required | string | min:3 | max: 30',
-            'body' => 'required | string | min: 10 | max: 50'
-        ];
     }
 }

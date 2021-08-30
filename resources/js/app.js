@@ -15,6 +15,8 @@ Vue.use(VueAxios, axios);
 
 import route from './route';
 
+Vue.use(VeeValidate);
+
 const routes = route.getRoutes();
 
 const router = new VueRouter({ mode: 'history', routes: routes });

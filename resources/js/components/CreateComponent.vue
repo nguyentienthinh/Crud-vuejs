@@ -6,7 +6,8 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Post Title:</label>
-                    <input type="text" class="form-control" v-model="post.title" minlength = "3" maxlength = "30" required>
+                    <input type="text" name='postTitle' class="form-control" v-model="post.title" v-validate="'required|max:30|min:3'">
+                    <span class="text-danger">{{ errors.first('postTitle') }}</span>
                 </div>
             </div>
         </div>
@@ -14,7 +15,8 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Post Body:</label>
-                    <textarea class="form-control" v-model="post.body" rows="5" minlength = "10" maxlength = "50" required></textarea>
+                    <textarea name="postBody" class="form-control" v-model="post.body" rows="5" v-validate="'required|max:50|min:10'"></textarea>
+                    <span class="text-danger">{{ errors.first('postBody') }}</span>
                 </div>
             </div>
         </div><br />
@@ -38,31 +40,34 @@
         },
         methods: {
             addPost(){
-                // let uri = 'http://127.0.0.1:8000/api/post/create';
-                // this.axios.post(uri, post).then((response) => {
-                //     this.$router.push({name: 'posts'});
-                // });
-                PostService.create({
-                    title: this.post.title,
-                    body: this.post.body,
-                }).then(response => {
-                    this.$router.push({name: 'posts'});
-
-                    var successStatus = 200;
-                    if (response.status == successStatus) {
-                        // Notify
-                        var notify = $.notify('Create post success!', {
-                            type: 'success',
-                            allow_dismiss: true,
-                        });
-                    } else {
-                        // Notify
-                        var notify = $.notify(response.message, {
-                            type: 'danger',
-                            allow_dismiss: true,
-                        });
+                // Validate
+                this.$validator.validateAll()
+                .then((result) => {
+                    if (result) {
+                        // Handle create
+                        PostService.create({
+                            title: this.post.title,
+                            body: this.post.body,
+                        }).then(response => {
+                            var successStatus = 200;
+                            if (response.status == successStatus) {
+                                // Change route
+                                this.$router.push({name: 'posts'});
+                                // Notify
+                                var notify = $.notify('Create post success!', {
+                                    type: 'success',
+                                    allow_dismiss: true,
+                                });
+                            } else {
+                                // Notify
+                                var notify = $.notify(response.message, {
+                                    type: 'danger',
+                                    allow_dismiss: true,
+                                });
+                            }
+                        })
                     }
-                })
+                });
             }
         }
     }
