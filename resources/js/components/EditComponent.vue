@@ -10,6 +10,7 @@
                     <label>Post Title:</label>
                     <input type="text" name='postTitle' class="form-control" v-model="post.title" v-validate="'required|max:30|min:3'">
                     <span class="text-danger">{{ errors.first('postTitle') }}</span>
+                    <span class="text-danger">{{errorValidate.title}}</span>
                 </div>
             </div>
         </div>
@@ -19,6 +20,7 @@
                 <label>Post Body:</label>
                 <textarea name="postBody" class="form-control" v-model="post.body" rows="5" v-validate="'required|max:50|min:10'"></textarea>
                 <span class="text-danger">{{ errors.first('postBody') }}</span>
+                <span class="text-danger">{{errorValidate.body}}</span>
                 </div>
             </div>
         </div><br />
@@ -38,6 +40,13 @@
                 post: {
                     title: '',
                     body: ''
+                },
+
+                errorValidate: {
+                    name: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: ''
                 }
             }
         },
@@ -85,6 +94,11 @@
                                     type: 'danger',
                                     allow_dismiss: true,
                                 });
+                            }
+
+                            var errorValidateStatus = 400;
+                            if (response.status == errorValidateStatus) {
+                                this.errorValidate = response.data;
                             }
                         })
                     }

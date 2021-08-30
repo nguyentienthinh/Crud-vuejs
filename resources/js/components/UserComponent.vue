@@ -8,6 +8,7 @@
                         <label>User:</label>
                         <input type="text" name='name' class="form-control" v-model="user.name" v-validate="'required|max:10|min:3'">
                         <span class="text-danger">{{ errors.first('name') }}</span>
+                        <span class="text-danger">{{errorValidate.name}}</span>
                     </div>
                 </div>
             </div>
@@ -17,6 +18,7 @@
                     <label>Password:</label>
                     <input type="password" name="password" class="form-control" v-model="user.password" v-validate="'required|max:10|min:6'">
                     <span class="text-danger">{{ errors.first('password') }}</span>
+                    <span class="text-danger">{{errorValidate.password}}</span>
                     </div>
                 </div>
             </div><br />
@@ -36,6 +38,13 @@
                 user: {
                     name: '',
                     password: ''
+                },
+
+                errorValidate: {
+                    name: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: ''
                 }
             }
         },
@@ -69,6 +78,11 @@
                                     type: 'danger',
                                     allow_dismiss: true,
                                 });
+                            }
+
+                            var errorValidateStatus = 400;
+                            if (response.status == errorValidateStatus) {
+                                this.errorValidate = response.data;
                             }
                         })
                     }

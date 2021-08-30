@@ -59,7 +59,6 @@ export default class BaseService {
     }
 
     errorMsg(e) {
-        console.log(e)
         if (e.response === undefined) {
             e.status = 0
             e.statusText = e.message
@@ -72,9 +71,13 @@ export default class BaseService {
             for (let key in errors) {
                 validationErrors += errors[key] + '. '
             }
-        }
-
-        if (e.response.status !== 422) {
+        } else if (e.response.status === 401) {
+            // Notify
+            var notify = $.notify('No Authentication!', {
+                type: 'danger',
+                allow_dismiss: true,
+            });
+        } else {
             validationErrors = e.response.data
         }
 

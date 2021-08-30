@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-10"></div>
         <div class="col-md-2">
-        <router-link :to="{ name: 'create' }" class="btn btn-primary">Create Post</router-link>
+        <router-link :to="{ name: 'create' }" class="btn btn-primary" v-show="isLogin">Create Post</router-link>
         </div>
     </div><br />
 

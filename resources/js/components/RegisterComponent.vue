@@ -8,6 +8,7 @@
                         <label>User:</label>
                         <input type="text" name='name' class="form-control" v-model="user.name" v-validate="'required|max:10|min:3'">
                         <span class="text-danger">{{ errors.first('name') }}</span>
+                        <span class="text-danger">{{errorValidate.name}}</span>
                     </div>
                 </div>
             </div>
@@ -17,6 +18,7 @@
                         <label>Email:</label>
                         <input type="email" name='email' class="form-control" v-model="user.email" v-validate="'required|email|max:50|min:10'">
                         <span class="text-danger">{{ errors.first('email') }}</span>
+                        <span class="text-danger">{{errorValidate.email}}</span>
                     </div>
                 </div>
             </div>
@@ -26,6 +28,7 @@
                     <label>Password:</label>
                     <input type="password" name="password" class="form-control" v-model="user.password" v-validate="'required|max:10|min:6'" placeholder="Password">
                     <span class="text-danger">{{ errors.first('password') }}</span>
+                    <span class="text-danger">{{errorValidate.password}}</span>
                     </div>
                 </div>
             </div>
@@ -35,6 +38,7 @@
                     <label>Confirm Password:</label>
                     <input type="password" name="password_confirmation" class="form-control" v-model="user.confirmPassword" v-validate="'required|confirmed:password|max:10|min:6'" placeholder="Password, Again">
                     <span class="text-danger">{{ errors.first('password_confirmation') }}</span>
+                    <span class="text-danger">{{errorValidate.password_confirmation}}</span>
                     </div>
                 </div>
             </div><br />
@@ -52,6 +56,12 @@
         data() {
             return {
                 user: {
+                    name: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: ''
+                },
+                errorValidate: {
                     name: '',
                     email: '',
                     password: '',
@@ -87,6 +97,11 @@
                                     type: 'danger',
                                     allow_dismiss: true,
                                 });
+                            }
+
+                            var errorValidateStatus = 400;
+                            if (response.status == errorValidateStatus) {
+                                this.errorValidate = response.data;
                             }
                         })
                     }

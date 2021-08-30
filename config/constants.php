@@ -7,7 +7,8 @@ return [
             'NO_CONTENT' => 204,
             'BAD_REQUEST' => 400,
             'NOT_FOUND' => 404,
-            'OTHER' => 500
+            'OTHER' => 500,
+            'LOGGING_FAIL' => 203
         ]
     ],
     'message' => [
@@ -16,7 +17,8 @@ return [
             'NO_CONTENT' => 'Don\'t have data.',
             'BAD_REQUEST' => 'Bad Request! Please check request params.',
             'NOT_FOUND' => 'Page Not Found!',
-            'OTHER' => 'Server error! Please resend the request'
+            'OTHER' => 'Server error! Please resend the request',
+            'LOGGING_FAIL' => 'Login failed. The user or password incorrect!'
         ]
     ]
 ];

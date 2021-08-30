@@ -44,14 +44,19 @@ class RegisterRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
+        // Format error validate
         $errors = (new ValidationException($validator))->errors();
+        $errorValidate = [];
+        foreach ($errors as $key => $error) {
+            $errorValidate[$key] = $error[0];
+        }
 
         throw new HttpResponseException(
             response()->json(
                 [
                     'status' => config('constants.status.ERROR.BAD_REQUEST'),
                     'message' => config('constants.message.ERROR.BAD_REQUEST'),
-                    'data' => $errors
+                    'data' => $errorValidate
                 ]
             )
         );

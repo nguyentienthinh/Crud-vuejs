@@ -89,8 +89,8 @@ class UserController extends Controller
         // Check credentials
         if (!($token = JWTAuth::attempt($credentials))) {
             $logging->error(sprintf('Logging user [%s] Failed!', $credentials['name']));
-            $this->status = config('constants.status.ERROR.OTHER');
-            $this->message = config('constants.status.message.OTHER');
+            $this->status = config('constants.status.ERROR.LOGGING_FAIL');
+            $this->message = config('constants.message.ERROR.LOGGING_FAIL');
         }
 
         $logging->info(sprintf('Logging user [%s] Success!', $credentials['name']));
