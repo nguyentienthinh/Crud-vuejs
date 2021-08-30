@@ -124,6 +124,24 @@ return [
             'path' => storage_path('logs/post/post_delete.log'),
             'days' => env('SYNC_POST_LOG_FILES_KEEPING'),
         ],
+        'user_register' => [
+            'driver' => 'daily',
+            'channels' => ['daily'],
+            'path' => storage_path('logs/user/user_register.log'),
+            'days' => env('SYNC_POST_LOG_FILES_KEEPING'),
+        ],
+        'user_login' => [
+            'driver' => 'daily',
+            'channels' => ['daily'],
+            'path' => storage_path('logs/user/user_login.log'),
+            'days' => env('SYNC_POST_LOG_FILES_KEEPING'),
+        ],
+        'user_logout' => [
+            'driver' => 'daily',
+            'channels' => ['daily'],
+            'path' => storage_path('logs/user/user_logout.log'),
+            'days' => env('SYNC_POST_LOG_FILES_KEEPING'),
+        ],
     ],
 
 ];

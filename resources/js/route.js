@@ -1,7 +1,10 @@
 import HomeComponent from './components/HomeComponent.vue';
+import UserComponent from './components/UserComponent.vue';
+import RegisterComponent from './components/RegisterComponent.vue';
 import CreateComponent from './components/CreateComponent.vue';
 import IndexComponent from './components/IndexComponent.vue';
 import EditComponent from './components/EditComponent.vue';
+import PageNotFoundComponent from './components/PageNotFoundComponent.vue';
 
 class route {
     getRoutes() {
@@ -9,6 +12,16 @@ class route {
                 name: 'home',
                 path: '/',
                 component: HomeComponent
+            },
+            {
+                name: 'login',
+                path: '/user/login',
+                component: UserComponent
+            },
+            {
+                name: 'register',
+                path: '/user/register',
+                component: RegisterComponent
             },
             {
                 name: 'create',
@@ -24,6 +37,11 @@ class route {
                 name: 'edit',
                 path: '/posts/edit/:slug',
                 component: EditComponent
+            },
+            {
+                name: 'pageNotFound',
+                path: '*',
+                component: PageNotFoundComponent
             }
         ];
 
